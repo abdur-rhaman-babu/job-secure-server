@@ -24,10 +24,16 @@ async function run() {
   try {
       const jobsCollections = client.db('jobsDB').collection('jobs')
 
-      // post jobs from the client
+      // post or create jobs from the client
       app.post('/jobs', async (req, res)=>{
         const newJob = req.body;
         const result = await jobsCollections.insertOne(newJob)
+        res.send(result)
+      })
+
+      // get job form server
+      app.get('/jobs', async (req, res)=>{
+        const result = await jobsCollections.find().toArray()
         res.send(result)
       })
   } finally {
