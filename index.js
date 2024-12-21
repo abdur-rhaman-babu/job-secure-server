@@ -69,6 +69,19 @@ async function run() {
         res.send(result)
       })
 
+      // pst job with update
+      app.post('/update/:id', async (req, res)=>{
+        const id = req.params.id;
+        const filter = {_id: new ObjectId(id)}
+        const job = req.body;
+        const updatedJob = {
+          $set: job
+        }
+        const options = {upsert: true}
+        const result = await jobsCollections.updateOne(filter, updatedJob, options)
+        res.send(result)
+      })
+
   } finally {
     // Ensures that the client will close when you finish/error
   }
