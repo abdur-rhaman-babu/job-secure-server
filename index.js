@@ -36,6 +36,23 @@ async function run() {
         const result = await jobsCollections.find().toArray()
         res.send(result)
       })
+
+      // get data wiht email system-01
+      app.get('/jobs/:email', async (req, res)=>{
+          const email = req.params.email;
+          const query = {'buyer.email': email}
+          const result = await jobsCollections.find(query).toArray()
+          res.send(result)
+      })
+      
+      // get data wiht email system-02
+      app.get('/myPostedJob', async (req, res)=>{
+          const email = req.query.email;
+          const query = {'buyer.email': email}
+          const result = await jobsCollections.find(query).toArray()
+          res.send(result)
+      })
+      
   } finally {
     // Ensures that the client will close when you finish/error
   }
