@@ -98,6 +98,14 @@ async function run() {
     // post bid api
     app.post("/add-bid", async (req, res) => {
       const bidData = req.body;
+
+      // if you have already placed a bid on this job
+      const query = { email: bidData.email, jobId: bidData.jobId };
+      const alreadyExsist = await bidsCollections.findOne(query);
+      if (alreadyExsist) {
+        return res.status(400).send("you already placed a bid on this job");
+      }
+      
       const result = await bidsCollections.insertOne(bidData);
 
       // bid count
@@ -106,11 +114,18 @@ async function run() {
         $inc: { bid_count: 1 },
       };
       const updateBid = await jobsCollections.updateOne(filter, update);
-      console.log(updateBid)
+      // console.log(updateBid)
       res.send(result);
     });
+
+    app.get('/add-bids', async (req, res)=>{
+      const email = req.query.email;
+      const query = {email: email}
+      const result = await bidsCollections.find(query).toArray()
+      res.send(result)
+    })
+
   } finally {
-    // Ensures that the client will close when you finish/error
   }
 }
 run().catch(console.dir);
